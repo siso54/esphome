@@ -194,16 +194,16 @@ void WaveshareEPaper4P2InV2::partial_update_() {
 void WaveshareEPaper4P2InV2::full_update_() {
   ESP_LOGI(TAG, "Performing full e-paper update.");
   this->write_lut_(FULL_LUT);
-  this->command(0x3f);
-  this->data(0x07);
-  this->command(0x03);
-  this->data(0x17);
-  this->command(0x04);
-  this->data(0x41);
-  this->data(0xA8);
-  this->data(0x32);
-  this->command(0x2c);
-  this->data(0x30);
+  // this->command(0x3f);
+  // this->data(0x07);
+  // this->command(0x03);
+  // this->data(0x17);
+  // this->command(0x04);
+  // this->data(0x41);
+  // this->data(0xA8);
+  // this->data(0x32);
+  // this->command(0x2c);
+  // this->data(0x30);
   this->write_buffer_(WRITE_BUFFER, 0, this->get_height_internal());
   this->write_buffer_(WRITE_BASE, 0, this->get_height_internal());
   SEND(ON_FULL);
