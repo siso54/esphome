@@ -103,8 +103,8 @@ static const uint8_t CMD5[] = {0x37, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, 0
 static const uint8_t BORDER_PART[] = {0x3C, 0x80};  // border waveform
 static const uint8_t BORDER_FULL[] = {0x3C, 0x05};  // border waveform
 static const uint8_t CMD1[] = {0x3F, 0x22};
-static const uint8_t RAM_X_START[] = {0x44, 0x00, (400>>3) & 0xFF};           // set ram_x_address_start_end
-static const uint8_t RAM_Y_START[] = {0x45, 0x00, (0x00>>9) && 0xFF, 300, 0};  // set ram_y_address_start_end
+static const uint8_t RAM_X_START[] = {0x44, (0x00>>3) & 0xFF, (0x00>>3) & 0xFF};           // set ram_x_address_start_end
+static const uint8_t RAM_Y_START[] = {0x45, 0x00 & 0xFF, ((0x00 >> 8) & 0xFF), 300 & 0xFF , ((300 >> 8) & 0xFF)};  // set ram_y_address_start_end
 static const uint8_t RAM_X_POS[] = {0x4E, 0x00};                      // set ram_x_address_counter
 // static const uint8_t RAM_Y_POS[] = {0x4F, 0x00, 0x00};        // set ram_y_address_counter
 #define SEND(x) this->cmd_data(x, sizeof(x))
