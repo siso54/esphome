@@ -211,7 +211,7 @@ void WaveshareEPaper4P2InV2::full_update_() {
 //   SEND(ON_FULL);
 //   this->command(ACTIVATE);  // don't wait here
 //   this->is_busy_ = false;
-// }
+}
 
 void WaveshareEPaper4P2InV2::display() {
   // if (this->is_busy_ || (this->busy_pin_ != nullptr && this->busy_pin_->digital_read()))
