@@ -88,7 +88,7 @@ static const uint8_t ACTIVATE = 0x20;  // yes 420
 static const uint8_t WRITE_BUFFER = 0x24; // yes 420
 static const uint8_t WRITE_BASE = 0x26;
 
-static const uint8_t DRV_OUT_CTL[] = {0x01, 0x27, 0x01, 0x00};  // driver output control
+static const uint8_t DRV_OUT_CTL[] = {0x21, 0x40, 0x00};  // DISPLAY update control
 static const uint8_t GATEV[] = {0x03, 0x17};
 static const uint8_t SRCV[] = {0x04, 0x41, 0x0C, 0x32};
 static const uint8_t SLEEP[] = {0x10, 0x01};
@@ -103,8 +103,8 @@ static const uint8_t CMD5[] = {0x37, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, 0
 static const uint8_t BORDER_PART[] = {0x3C, 0x80};  // border waveform
 static const uint8_t BORDER_FULL[] = {0x3C, 0x05};  // border waveform
 static const uint8_t CMD1[] = {0x3F, 0x22};
-static const uint8_t RAM_X_START[] = {0x44, 0x00, 121 / 8};           // set ram_x_address_start_end
-static const uint8_t RAM_Y_START[] = {0x45, 0x00, 0x00, 250 - 1, 0};  // set ram_y_address_start_end
+static const uint8_t RAM_X_START[] = {0x44, 0x00, (400>>3) & 0xFF};           // set ram_x_address_start_end
+static const uint8_t RAM_Y_START[] = {0x45, 0x00, (0x00>>9) && 0xFF, 300, 0};  // set ram_y_address_start_end
 static const uint8_t RAM_X_POS[] = {0x4E, 0x00};                      // set ram_x_address_counter
 // static const uint8_t RAM_Y_POS[] = {0x4F, 0x00, 0x00};        // set ram_y_address_counter
 #define SEND(x) this->cmd_data(x, sizeof(x))
@@ -155,7 +155,7 @@ void WaveshareEPaper4P2InV2::setup() {
   SEND(DISPLAY_UPDATE);
   SEND(TEMP_SENS);
   this->wait_until_idle_();
-  this->write_lut_(FULL_LUT);
+  // this->write_lut_(FULL_LUT);
 }
 
 // t and b are y positions, i.e. line numbers.
@@ -172,55 +172,57 @@ void WaveshareEPaper4P2InV2::set_window_(int t, int b) {
 }
 
 // must implement, but we override setup to have more control
-void WaveshareEPaper4P2InV2::initialize() {}
+void WaveshareEPaper4P2InV2::initialize() {
+
+}
 
 void WaveshareEPaper4P2InV2::partial_update_() {
-  this->send_reset_();
-  this->set_timeout(100, [this] {
-    this->write_lut_(PARTIAL_LUT);
-    SEND(BORDER_PART);
-    SEND(UPSEQ);
-    this->command(ACTIVATE);
-    this->set_timeout(100, [this] {
-      this->wait_until_idle_();
-      this->write_buffer_(WRITE_BUFFER, 0, this->get_height_internal());
-      SEND(ON_PARTIAL);
-      this->command(ACTIVATE);  // Activate Display Update Sequence
-      this->is_busy_ = false;
-    });
+  // this->send_reset_();
+  // this->set_timeout(100, [this] {
+  //   this->write_lut_(PARTIAL_LUT);
+  //   SEND(BORDER_PART);
+  //   SEND(UPSEQ);
+  //   this->command(ACTIVATE);
+  //   this->set_timeout(100, [this] {
+  //     this->wait_until_idle_();
+  //     this->write_buffer_(WRITE_BUFFER, 0, this->get_height_internal());
+  //     SEND(ON_PARTIAL);
+  //     this->command(ACTIVATE);  // Activate Display Update Sequence
+  //     this->is_busy_ = false;
+  //   });
   });
 }
 
 void WaveshareEPaper4P2InV2::full_update_() {
-  ESP_LOGI(TAG, "Performing full e-paper update.");
-  this->write_lut_(FULL_LUT);
-  // this->command(0x3f);
-  // this->data(0x07);
-  // this->command(0x03);
-  // this->data(0x17);
-  // this->command(0x04);
-  // this->data(0x41);
-  // this->data(0xA8);
-  // this->data(0x32);
-  // this->command(0x2c);
-  // this->data(0x30);
-  this->write_buffer_(WRITE_BUFFER, 0, this->get_height_internal());
-  this->write_buffer_(WRITE_BASE, 0, this->get_height_internal());
-  SEND(ON_FULL);
-  this->command(ACTIVATE);  // don't wait here
-  this->is_busy_ = false;
-}
+//   ESP_LOGI(TAG, "Performing full e-paper update.");
+//   this->write_lut_(FULL_LUT);
+//   // this->command(0x3f);
+//   // this->data(0x07);
+//   // this->command(0x03);
+//   // this->data(0x17);
+//   // this->command(0x04);
+//   // this->data(0x41);
+//   // this->data(0xA8);
+//   // this->data(0x32);
+//   // this->command(0x2c);
+//   // this->data(0x30);
+//   this->write_buffer_(WRITE_BUFFER, 0, this->get_height_internal());
+//   this->write_buffer_(WRITE_BASE, 0, this->get_height_internal());
+//   SEND(ON_FULL);
+//   this->command(ACTIVATE);  // don't wait here
+//   this->is_busy_ = false;
+// }
 
 void WaveshareEPaper4P2InV2::display() {
-  if (this->is_busy_ || (this->busy_pin_ != nullptr && this->busy_pin_->digital_read()))
-    return;
-  this->is_busy_ = true;
-  const bool partial = false;
-  this->at_update_ = (this->at_update_ + 1) % this->full_update_every_;
-  if (partial) {
-    this->partial_update_();
-  } else {
-    this->full_update_();
+  // if (this->is_busy_ || (this->busy_pin_ != nullptr && this->busy_pin_->digital_read()))
+  //   return;
+  // this->is_busy_ = true;
+  // const bool partial = false;
+  // this->at_update_ = (this->at_update_ + 1) % this->full_update_every_;
+  // if (partial) {
+  //   this->partial_update_();
+  // } else {
+  //   this->full_update_();
   }
 }
 
