@@ -190,7 +190,7 @@ void WaveshareEPaper4P2InV2::partial_update_() {
   //     this->command(ACTIVATE);  // Activate Display Update Sequence
   //     this->is_busy_ = false;
   //   });
-  });
+  // });
 }
 
 void WaveshareEPaper4P2InV2::full_update_() {
