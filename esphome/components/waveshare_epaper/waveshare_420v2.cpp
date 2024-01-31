@@ -223,7 +223,7 @@ void WaveshareEPaper4P2InV2::display() {
   //   this->partial_update_();
   // } else {
   //   this->full_update_();
-  }
+  // }
 }
 
 int WaveshareEPaper4P2InV2::get_width_internal() { return 400; }
