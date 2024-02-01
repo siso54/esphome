@@ -142,7 +142,6 @@ void WaveshareEPaper4P2InV2::setup() {
 // t and b are y positions, i.e. line numbers.
 void WaveshareEPaper4P2InV2::set_window_(int t, int b) {
   uint8_t buffer[3];
-
   SEND(RAM_X_START);
   SEND(RAM_Y_START);
   SEND(RAM_X_POS);
@@ -210,8 +209,8 @@ void WaveshareEPaper4P2InV2::display() {
   const bool partial = this->at_update_ != 0;
   this->at_update_ = (this->at_update_ + 1) % this->full_update_every_;
   if (partial) {
-    this->full_update_();
-    // this->partial_update_();
+    // this->full_update_();
+    this->partial_update_();
   } else {
     this->full_update_();
   }
