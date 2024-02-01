@@ -134,7 +134,7 @@ void WaveshareEPaper4P2InV2::setup() {
   SEND(DRV_OUT_CTL);
   SEND(BORDER_FULL);
   this->command(0x1A);
-  this->data(0x6E);
+  this->data(0x5A);
   this->command(0x22);
   this->data(0x91);
   this->command(0x20);
