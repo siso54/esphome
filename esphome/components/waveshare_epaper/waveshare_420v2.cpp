@@ -158,7 +158,7 @@ void WaveshareEPaper4P2InV2::partial_update_() {
     this->set_timeout(100, [this] {
       this->wait_until_idle_();
       this->write_buffer_(WRITE_BUFFER, 0, this->get_height_internal());
-      END(ON_PARTIAL);
+      SEND(ON_PARTIAL);
       this->command(ACTIVATE);  // don't wait here
       this->is_busy_ = false;
     });
