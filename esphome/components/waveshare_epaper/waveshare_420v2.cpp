@@ -215,8 +215,8 @@ void WaveshareEPaper4P2InV2::display() {
   const bool partial = this->at_update_ != 0;
   this->at_update_ = (this->at_update_ + 1) % this->full_update_every_;
   if (partial) {
-    // this->full_update_();
-    this->partial_update_();
+    this->full_update_();
+    // this->partial_update_();
   } else {
     this->full_update_();
   }
