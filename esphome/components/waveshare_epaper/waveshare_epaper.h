@@ -671,7 +671,7 @@ class WaveshareEPaper2P13InDKE : public WaveshareEPaper {
 
   uint32_t idle_timeout_() override;
 
-  uint32_t full_update_every_{3};
+  uint32_t full_update_every_{30};
   uint32_t at_update_{0};
 };
 
@@ -739,7 +739,7 @@ class WaveshareEPaper4P2InV2 : public WaveshareEPaper {
   void partial_update_();
   void full_update_();
 
-  uint32_t full_update_every_{30};
+  uint32_t full_update_every_{3};
   uint32_t at_update_{0};
   bool is_busy_{false};
   void write_lut_(const uint8_t *lut);
