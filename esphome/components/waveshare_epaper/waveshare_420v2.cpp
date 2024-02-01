@@ -133,8 +133,6 @@ void WaveshareEPaper4P2InV2::setup() {
   ESP_LOGI(TAG, "Setting up.");
   SEND(DRV_OUT_CTL);
   SEND(BORDER_FULL);
-  this->command(0x1A);
-  this->data(0x5A);
   this->command(0x22);
   this->data(0x99);
   this->command(0x20);
@@ -158,31 +156,7 @@ void WaveshareEPaper4P2InV2::set_window_(int t, int b) {
 }
 
 // must implement, but we override setup to have more control
-void WaveshareEPaper4P2InV2::initialize() {
- ESP_LOGI(TAG, "Setting up pins init.");
-  setup_pins_();
-  delay(20);
-  ESP_LOGI(TAG, "HW reset.");
-  this->reset_pin_->digital_write(true);
-  delay(100);
-  this->reset_pin_->digital_write(false);
-  delay(2);
-  this->reset_pin_->digital_write(true);
-  delay(100);  // NOLINT
-  this->wait_until_idle_();
-  ESP_LOGI(TAG, "SW reset.");
-  // SW reset
-  this->command(0x12);
-  this->wait_until_idle_();
-  ESP_LOGI(TAG, "Setting up.");
-  SEND(DRV_OUT_CTL);
-  SEND(BORDER_FULL);
-  SEND(DATA_ENTRY);
-  this->set_window_(0, this->get_height_internal());
-  this->wait_until_idle_();
-  // this->write_lut_(FULL_LUT);
-  ESP_LOGI(TAG, "Setup complete.");
-}
+void WaveshareEPaper4P2InV2::initialize() { }
 
 void WaveshareEPaper4P2InV2::partial_update_() {
   ESP_LOGI(TAG, "Performing partial e-paper update.");
@@ -209,6 +183,7 @@ void WaveshareEPaper4P2InV2::full_update_() {
   this->command(ACTIVATE);
   this->wait_until_idle_();
   this->write_buffer_(WRITE_BUFFER, 0, this->get_height_internal());
+  this->write_buffer_(WRITE_BASE, 0, this->get_height_internal());
   SEND(ON_FULL);
   this->command(ACTIVATE);  // don't wait here
   this->is_busy_ = false;
@@ -221,7 +196,6 @@ void WaveshareEPaper4P2InV2::display() {
   const bool partial = this->at_update_ != 0;
   this->at_update_ = (this->at_update_ + 1) % this->full_update_every_;
   if (partial) {
-    // this->full_update_();
     this->partial_update_();
   } else {
     this->full_update_();
