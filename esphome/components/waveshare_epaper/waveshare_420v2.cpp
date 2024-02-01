@@ -103,8 +103,8 @@ static const uint8_t CMD5[] = {0x37, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, 0
 static const uint8_t BORDER_PART[] = {0x3C, 0x80};  // border waveform
 static const uint8_t BORDER_FULL[] = {0x3C, 0x05};  // border waveform
 static const uint8_t CMD1[] = {0x3F, 0x07};
-static const uint8_t RAM_X_START[] = {0x44, (0x00>>3) & 0xFF, (0x00>>3) & 0xFF};           // set ram_x_address_start_end
-static const uint8_t RAM_Y_START[] = {0x45, 0x00 & 0xFF, ((0x00 >> 8) & 0xFF), 300 & 0xFF , ((300 >> 8) & 0xFF)};  // set ram_y_address_start_end
+static const uint8_t RAM_X_START[] = {0x44, (0x00>>3) & 0xFF, (399>>3) & 0xFF};           // set ram_x_address_start_end
+static const uint8_t RAM_Y_START[] = {0x45, 0x00 & 0xFF, ((0x00 >> 8) & 0xFF), 299 & 0xFF , ((299 >> 8) & 0xFF)};  // set ram_y_address_start_end
 static const uint8_t RAM_X_POS[] = {0x4E, 0x00};                      // set ram_x_address_counter
 // static const uint8_t RAM_Y_POS[] = {0x4F, 0x00, 0x00};        // set ram_y_address_counter
 #define SEND(x) this->cmd_data(x, sizeof(x))
@@ -138,24 +138,28 @@ void WaveshareEPaper4P2InV2::send_reset_() {
 }
 
 void WaveshareEPaper4P2InV2::setup() {
+  ESP_LOGI(TAG, "Setting up pins.");
   setup_pins_();
   delay(20);
-  this->send_reset_();
-  // as a one-off delay this is not worth working around.
+  ESP_LOGI(TAG, "HW reset.");
+  this->reset_pin_->digital_write(true);
+  delay(100);
+  this->reset_pin_->digital_write(false);
+  delay(2);
+  this->reset_pin_->digital_write(true);
   delay(100);  // NOLINT
   this->wait_until_idle_();
-  this->command(SW_RESET);
+  ESP_LOGI(TAG, "SW reset.");
+  // SW reset
+  this->command(0x12);
   this->wait_until_idle_();
-
+  ESP_LOGI(TAG, "Setting up.");
   SEND(DRV_OUT_CTL);
-  SEND(DATA_ENTRY);
-  SEND(CMD5);
-  this->set_window_(0, this->get_height_internal());
   SEND(BORDER_FULL);
-  SEND(DISPLAY_UPDATE);
-  SEND(TEMP_SENS);
+  SEND(DATA_ENTRY);
+  this->set_window_(0, this->get_height_internal());
   this->wait_until_idle_();
-  this->write_lut_(FULL_LUT);
+  ESP_LOGI(TAG, "Setup complete.");
 }
 
 // t and b are y positions, i.e. line numbers.
@@ -166,8 +170,8 @@ void WaveshareEPaper4P2InV2::set_window_(int t, int b) {
   SEND(RAM_Y_START);
   SEND(RAM_X_POS);
   buffer[0] = 0x4F;
-  buffer[1] = (uint8_t) t;
-  buffer[2] = (uint8_t) (t >> 8);
+  buffer[1] = (uint8_t) t & 0xFF;
+  buffer[2] = (uint8_t) (t >> 8) & 0xFF;
   SEND(buffer);
 }
 
@@ -195,12 +199,12 @@ void WaveshareEPaper4P2InV2::partial_update_() {
 
 void WaveshareEPaper4P2InV2::full_update_() {
   ESP_LOGI(TAG, "Performing full e-paper update.");
-  this->write_lut_(FULL_LUT);
-  this->write_buffer_(WRITE_BUFFER, 0, this->get_height_internal());
-  this->write_buffer_(WRITE_BASE, 0, this->get_height_internal());
-  SEND(ON_FULL);
-  this->command(ACTIVATE);  // don't wait here
-  this->is_busy_ = false;
+  // this->write_lut_(FULL_LUT);
+  // this->write_buffer_(WRITE_BUFFER, 0, this->get_height_internal());
+  // this->write_buffer_(WRITE_BASE, 0, this->get_height_internal());
+  // SEND(ON_FULL);
+  // this->command(ACTIVATE);  // don't wait here
+  // this->is_busy_ = false;
 }
 
 void WaveshareEPaper4P2InV2::display() {
