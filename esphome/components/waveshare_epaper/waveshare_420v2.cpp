@@ -209,37 +209,35 @@ void WaveshareEPaper4P2InV2::partial_update_() {
     // SEND(BORDER_PART);
     // SEND(UPSEQ);
     // this->command(ACTIVATE);
-    // this->set_timeout(100, [this] {
-    //   this->wait_until_idle_();
-    //   this->write_buffer_(WRITE_BUFFER, 0, this->get_height_internal());
-    //   SEND(ON_PARTIAL);
-    //   this->command(ACTIVATE);  // Activate Display Update Sequence
-    //   this->is_busy_ = false;
-    // });
-
-     int Width, Height;
-      Width = (400 % 8 == 0)? (400 / 8 ): (400 / 8 + 1);
-      Height = 300;
-
-      this->command(0x24);
-      for (int j = 0; j < Height; j++) {
-        for (int i = 0; i < Width; i++) {
-            this->data(0xFF);
-        }
-      }
-
-      this->command(0x26);
-      for (int j = 0; j < Height; j++) {
-        for (int i = 0; i < Width; i++) {
-            this->data(0xFF);
-        }
-      }
-
+    this->set_timeout(100, [this] {
+      this->wait_until_idle_();
+      this->write_buffer_(WRITE_BUFFER, 0, this->get_height_internal());
       this->command(0x22);
       this->data(0xFF);
       this->command(0x20);
       this->wait_until_idle_();
       this->is_busy_ = false;
+    });
+
+    //  int Width, Height;
+    //   Width = (400 % 8 == 0)? (400 / 8 ): (400 / 8 + 1);
+    //   Height = 300;
+
+    //   this->command(0x24);
+    //   for (int j = 0; j < Height; j++) {
+    //     for (int i = 0; i < Width; i++) {
+    //         this->data(0xFF);
+    //     }
+    //   }
+
+    //   this->command(0x26);
+    //   for (int j = 0; j < Height; j++) {
+    //     for (int i = 0; i < Width; i++) {
+    //         this->data(0xFF);
+    //     }
+    //   }
+
+
   });
 }
 
@@ -252,23 +250,23 @@ void WaveshareEPaper4P2InV2::full_update_() {
   // this->command(ACTIVATE);  // don't wait here
   // this->is_busy_ = false;
 
-   int Width, Height;
-  Width = (400 % 8 == 0)? (400 / 8 ): (400 / 8 + 1);
-  Height = 300;
+  //  int Width, Height;
+  // Width = (400 % 8 == 0)? (400 / 8 ): (400 / 8 + 1);
+  // Height = 300;
 
-  this->command(0x24);
-  for (int j = 0; j < Height; j++) {
-    for (int i = 0; i < Width; i++) {
-        this->data(0xFF);
-    }
-  }
+  // this->command(0x24);
+  // for (int j = 0; j < Height; j++) {
+  //   for (int i = 0; i < Width; i++) {
+  //       this->data(0xFF);
+  //   }
+  // }
 
-  this->command(0x26);
-  for (int j = 0; j < Height; j++) {
-    for (int i = 0; i < Width; i++) {
-        this->data(0xFF);
-    }
-  }
+  // this->command(0x26);
+  // for (int j = 0; j < Height; j++) {
+  //   for (int i = 0; i < Width; i++) {
+  //       this->data(0xFF);
+  //   }
+  // }
 
   this->command(0x22);
   this->data(0xF7);
