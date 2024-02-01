@@ -175,7 +175,7 @@ void WaveshareEPaper4P2InV2::initialize() {
   SEND(DATA_ENTRY);
   this->set_window_(0, this->get_height_internal());
   this->wait_until_idle_();
-  this->write_lut_(FULL_LUT);
+  // this->write_lut_(FULL_LUT);
   ESP_LOGI(TAG, "Setup complete.");
 }
 
