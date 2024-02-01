@@ -240,20 +240,20 @@ void WaveshareEPaper4P2InV2::display() {
   //   this->full_update_();
   // }
 
-  UWORD Width, Height;
+  int Width, Height;
   Width = (400 % 8 == 0)? (400 / 8 ): (400 / 8 + 1);
   Height = 300;
 
   this->command(0x24);
-  for (UWORD j = 0; j < Height; j++) {
-    for (UWORD i = 0; i < Width; i++) {
+  for (int j = 0; j < Height; j++) {
+    for (int i = 0; i < Width; i++) {
         this->data(0xFF);
     }
   }
 
   this->command(0x26);
-  for (UWORD j = 0; j < Height; j++) {
-    for (UWORD i = 0; i < Width; i++) {
+  for (int j = 0; j < Height; j++) {
+    for (int i = 0; i < Width; i++) {
         this->data(0xFF);
     }
   }
