@@ -203,7 +203,7 @@ void WaveshareEPaper4P2InV2::full_update_() {
   // this->write_lut_(FULL_LUT);
   this->write_buffer_(WRITE_BUFFER, 0, this->get_height_internal());
   this->write_buffer_(WRITE_BASE, 0, this->get_height_internal());
-  // SEND(ON_FULL);
+  SEND(ON_FULL);
   this->command(ACTIVATE);  // don't wait here
   this->is_busy_ = false;
 }
@@ -215,8 +215,8 @@ void WaveshareEPaper4P2InV2::display() {
   const bool partial = this->at_update_ != 0;
   this->at_update_ = (this->at_update_ + 1) % this->full_update_every_;
   if (partial) {
-    this->full_update_();
-    // this->partial_update_();
+    // this->full_update_();
+    this->partial_update_();
   } else {
     this->full_update_();
   }
