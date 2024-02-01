@@ -177,7 +177,28 @@ void WaveshareEPaper4P2InV2::set_window_(int t, int b) {
 
 // must implement, but we override setup to have more control
 void WaveshareEPaper4P2InV2::initialize() {
-
+ ESP_LOGI(TAG, "Setting up pins.");
+  setup_pins_();
+  delay(20);
+  ESP_LOGI(TAG, "HW reset.");
+  this->reset_pin_->digital_write(true);
+  delay(100);
+  this->reset_pin_->digital_write(false);
+  delay(2);
+  this->reset_pin_->digital_write(true);
+  delay(100);  // NOLINT
+  this->wait_until_idle_();
+  ESP_LOGI(TAG, "SW reset.");
+  // SW reset
+  this->command(0x12);
+  this->wait_until_idle_();
+  ESP_LOGI(TAG, "Setting up.");
+  SEND(DRV_OUT_CTL);
+  SEND(BORDER_FULL);
+  SEND(DATA_ENTRY);
+  this->set_window_(0, this->get_height_internal());
+  this->wait_until_idle_();
+  ESP_LOGI(TAG, "Setup complete.");
 }
 
 void WaveshareEPaper4P2InV2::partial_update_() {
@@ -228,7 +249,7 @@ uint32_t WaveshareEPaper4P2InV2::idle_timeout_() { return 5000; }
 
 void WaveshareEPaper4P2InV2::dump_config() {
   LOG_DISPLAY("", "Waveshare E-Paper", this)
-  ESP_LOGCONFIG(TAG, "  Model: 2.13inV3");
+  ESP_LOGCONFIG(TAG, "  Model: 4.20inV2");
   LOG_PIN("  CS Pin: ", this->cs_)
   LOG_PIN("  Reset Pin: ", this->reset_pin_)
   LOG_PIN("  DC Pin: ", this->dc_pin_)
