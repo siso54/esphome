@@ -115,7 +115,7 @@ void WaveshareEPaper4P2InV2::send_reset_() {
 }
 
 void WaveshareEPaper4P2InV2::setup() {
-  ESP_LOGI(TAG, "Setting up pins.");
+  ESP_LOGI(TAG, "Setting up pins setup.");
   setup_pins_();
   delay(20);
   ESP_LOGI(TAG, "HW reset.");
@@ -159,7 +159,7 @@ void WaveshareEPaper4P2InV2::set_window_(int t, int b) {
 
 // must implement, but we override setup to have more control
 void WaveshareEPaper4P2InV2::initialize() {
- ESP_LOGI(TAG, "Setting up pins.");
+ ESP_LOGI(TAG, "Setting up pins init.");
   setup_pins_();
   delay(20);
   ESP_LOGI(TAG, "HW reset.");
@@ -204,8 +204,8 @@ void WaveshareEPaper4P2InV2::partial_update_() {
 void WaveshareEPaper4P2InV2::full_update_() {
   ESP_LOGI(TAG, "Performing full e-paper update.");
   // this->write_lut_(FULL_LUT);
-  SEND(BORDER_FULL);
-  SEND(UPSEQ);
+  // SEND(BORDER_FULL);
+  // SEND(UPSEQ);
   this->write_buffer_(WRITE_BUFFER, 0, this->get_height_internal());
   SEND(ON_FULL);
   this->command(ACTIVATE);  // don't wait here
