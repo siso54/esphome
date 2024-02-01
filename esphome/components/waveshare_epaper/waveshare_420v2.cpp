@@ -59,7 +59,7 @@ static const uint8_t DATA_ENTRY[] = {0x11, 0x03};            // data entry mode
 static const uint8_t TEMP_SENS[] = {0x18, 0x80};             // Temp sensor
 static const uint8_t DISPLAY_UPDATE[] = {0x21, 0x00, 0x80};  // Display update control
 static const uint8_t UPSEQ[] = {0x22, 0xC0};
-static const uint8_t ON_FULL[] = {0x22, 0xB9};    // yes 420
+static const uint8_t ON_FULL[] = {0x22, 0xC7};    // yes 420
 static const uint8_t ON_PARTIAL[] = {0x22, 0xFF};
 static const uint8_t VCOM[] = {0x2C, 0x30};
 static const uint8_t CMD5[] = {0x37, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00, 0x00};
@@ -187,7 +187,7 @@ void WaveshareEPaper4P2InV2::initialize() {
 void WaveshareEPaper4P2InV2::partial_update_() {
   ESP_LOGI(TAG, "Performing partial e-paper update.");
   this->set_timeout(100, [this] {
-    this->write_lut_(FULL_LUT);
+    // this->write_lut_(FULL_LUT);
     this->set_timeout(100, [this] {
       this->wait_until_idle_();
       this->write_buffer_(WRITE_BUFFER, 0, this->get_height_internal());
@@ -200,7 +200,7 @@ void WaveshareEPaper4P2InV2::partial_update_() {
 
 void WaveshareEPaper4P2InV2::full_update_() {
   ESP_LOGI(TAG, "Performing full e-paper update.");
-  this->write_lut_(FULL_LUT);
+  // this->write_lut_(FULL_LUT);
   this->write_buffer_(WRITE_BUFFER, 0, this->get_height_internal());
   SEND(ON_FULL);
   this->command(ACTIVATE);  // don't wait here
