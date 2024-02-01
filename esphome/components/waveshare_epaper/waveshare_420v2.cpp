@@ -51,7 +51,7 @@ static const uint8_t ACTIVATE = 0x20;  // yes 420
 static const uint8_t WRITE_BUFFER = 0x24; // yes 420
 static const uint8_t WRITE_BASE = 0x26;
 
-static const uint8_t DRV_OUT_CTL[] = {0x21, 0x40, 0x00};  // DISPLAY update control
+static const uint8_t DRV_OUT_CTL[] = {0x21, 0x00, 0x00};  // DISPLAY update control
 static const uint8_t GATEV[] = {0x03, 0x17};
 static const uint8_t SRCV[] = {0x04, 0x41, 0xA8, 0x32};
 static const uint8_t SLEEP[] = {0x10, 0x01};
@@ -187,11 +187,14 @@ void WaveshareEPaper4P2InV2::initialize() {
 void WaveshareEPaper4P2InV2::partial_update_() {
   ESP_LOGI(TAG, "Performing partial e-paper update.");
   this->set_timeout(100, [this] {
-    this->write_lut_(FULL_LUT);
+    // this->write_lut_(FULL_LUT);
+    SEND(BORDER_PART);
+    SEND(UPSEQ);
+    this->command(ACTIVATE);
     this->set_timeout(100, [this] {
       this->wait_until_idle_();
       this->write_buffer_(WRITE_BUFFER, 0, this->get_height_internal());
-      SEND(ON_FULL);
+      SEND(ON_PARTIAL);
       this->command(ACTIVATE);  // don't wait here
       this->is_busy_ = false;
     });
