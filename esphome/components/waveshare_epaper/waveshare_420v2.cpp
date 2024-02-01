@@ -75,7 +75,7 @@ static const uint8_t RAM_X_POS[] = {0x4E, 0x00};                      // set ram
 void WaveshareEPaper4P2InV2::write_lut_(const uint8_t *lut) {
   this->wait_until_idle_();
   // this->cmd_data(lut, sizeof(FULL_LUT));
-  SEND(lut)
+  SEND(lut);
   this->command(0x3F);
   this->data(0x07);
 
