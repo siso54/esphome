@@ -221,8 +221,8 @@ void WaveshareEPaper4P2InV2::partial_update_() {
 void WaveshareEPaper4P2InV2::full_update_() {
   ESP_LOGI(TAG, "Performing full e-paper update.");
   // this->write_lut_(FULL_LUT);
-  // this->write_buffer_(WRITE_BUFFER, 0, this->get_height_internal());
-  // this->write_buffer_(WRITE_BASE, 0, this->get_height_internal());
+  this->write_buffer_(WRITE_BUFFER, 0, this->get_height_internal());
+  this->write_buffer_(WRITE_BASE, 0, this->get_height_internal());
   // SEND(ON_FULL);
   // this->command(ACTIVATE);  // don't wait here
   // this->is_busy_ = false;
@@ -239,6 +239,29 @@ void WaveshareEPaper4P2InV2::display() {
   // } else {
   //   this->full_update_();
   // }
+
+  UWORD Width, Height;
+  Width = (400 % 8 == 0)? (400 / 8 ): (400 / 8 + 1);
+  Height = 300;
+
+  this->command(0x24);
+  for (UWORD j = 0; j < Height; j++) {
+    for (UWORD i = 0; i < Width; i++) {
+        this->data(0xFF);
+    }
+  }
+
+  this->command(0x26);
+  for (UWORD j = 0; j < Height; j++) {
+    for (UWORD i = 0; i < Width; i++) {
+        this->data(0xFF);
+    }
+  }
+
+  this->command(0x22);
+  this->data(0xF7);
+  this->command(0x20);
+  this->wait_until_idle_();
 }
 
 int WaveshareEPaper4P2InV2::get_width_internal() { return 400; }
