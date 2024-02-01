@@ -202,20 +202,45 @@ void WaveshareEPaper4P2InV2::initialize() {
 }
 
 void WaveshareEPaper4P2InV2::partial_update_() {
+  ESP_LOGI(TAG, "Performing partial e-paper update.");
   // this->send_reset_();
-  // this->set_timeout(100, [this] {
-  //   this->write_lut_(PARTIAL_LUT);
-  //   SEND(BORDER_PART);
-  //   SEND(UPSEQ);
-  //   this->command(ACTIVATE);
-  //   this->set_timeout(100, [this] {
-  //     this->wait_until_idle_();
-  //     this->write_buffer_(WRITE_BUFFER, 0, this->get_height_internal());
-  //     SEND(ON_PARTIAL);
-  //     this->command(ACTIVATE);  // Activate Display Update Sequence
-  //     this->is_busy_ = false;
-  //   });
-  // });
+  this->set_timeout(100, [this] {
+    // this->write_lut_(PARTIAL_LUT);
+    // SEND(BORDER_PART);
+    // SEND(UPSEQ);
+    // this->command(ACTIVATE);
+    // this->set_timeout(100, [this] {
+    //   this->wait_until_idle_();
+    //   this->write_buffer_(WRITE_BUFFER, 0, this->get_height_internal());
+    //   SEND(ON_PARTIAL);
+    //   this->command(ACTIVATE);  // Activate Display Update Sequence
+    //   this->is_busy_ = false;
+    // });
+
+     int Width, Height;
+      Width = (400 % 8 == 0)? (400 / 8 ): (400 / 8 + 1);
+      Height = 300;
+
+      this->command(0x24);
+      for (int j = 0; j < Height; j++) {
+        for (int i = 0; i < Width; i++) {
+            this->data(0xFF);
+        }
+      }
+
+      this->command(0x26);
+      for (int j = 0; j < Height; j++) {
+        for (int i = 0; i < Width; i++) {
+            this->data(0xFF);
+        }
+      }
+
+      this->command(0x22);
+      this->data(0xFF);
+      this->command(0x20);
+      this->wait_until_idle_();
+      this->is_busy_ = false;
+  });
 }
 
 void WaveshareEPaper4P2InV2::full_update_() {
@@ -226,21 +251,8 @@ void WaveshareEPaper4P2InV2::full_update_() {
   // SEND(ON_FULL);
   // this->command(ACTIVATE);  // don't wait here
   // this->is_busy_ = false;
-}
 
-void WaveshareEPaper4P2InV2::display() {
-  // if (this->is_busy_ || (this->busy_pin_ != nullptr && this->busy_pin_->digital_read()))
-  //   return;
-  // this->is_busy_ = true;
-  // const bool partial = false;
-  // this->at_update_ = (this->at_update_ + 1) % this->full_update_every_;
-  // if (partial) {
-  //   this->partial_update_();
-  // } else {
-  //   this->full_update_();
-  // }
-
-  int Width, Height;
+   int Width, Height;
   Width = (400 % 8 == 0)? (400 / 8 ): (400 / 8 + 1);
   Height = 300;
 
@@ -262,6 +274,22 @@ void WaveshareEPaper4P2InV2::display() {
   this->data(0xF7);
   this->command(0x20);
   this->wait_until_idle_();
+  this->is_busy_ = false;
+
+
+}
+
+void WaveshareEPaper4P2InV2::display() {
+  if (this->is_busy_ || (this->busy_pin_ != nullptr && this->busy_pin_->digital_read()))
+    return;
+  this->is_busy_ = true;
+  const bool partial = this->at_update_ != 0;
+  this->at_update_ = (this->at_update_ + 1) % this->full_update_every_;
+  if (partial) {
+    this->partial_update_();
+  } else {
+    this->full_update_();
+  }
 }
 
 int WaveshareEPaper4P2InV2::get_width_internal() { return 400; }
