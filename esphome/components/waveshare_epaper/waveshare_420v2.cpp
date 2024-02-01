@@ -146,8 +146,8 @@ void WaveshareEPaper4P2InV2::set_window_(int t, int b) {
   SEND(RAM_Y_START);
   SEND(RAM_X_POS);
   buffer[0] = 0x4F;
-  buffer[1] = (uint8_t) t & 0xFF;
-  buffer[2] = (uint8_t) (t >> 8) & 0xFF;
+  buffer[1] = (uint8_t) 0 & 0xFF;
+  buffer[2] = (uint8_t) (0 >> 8) & 0xFF;
   SEND(buffer);
 }
 
