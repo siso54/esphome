@@ -200,7 +200,7 @@ void WaveshareEPaper4P2InV2::partial_update_() {
 
 void WaveshareEPaper4P2InV2::full_update_() {
   ESP_LOGI(TAG, "Performing full e-paper update.");
-  // this->write_lut_(FULL_LUT);
+  this->write_lut_(FULL_LUT);
   this->write_buffer_(WRITE_BUFFER, 0, this->get_height_internal());
   SEND(ON_FULL);
   this->command(ACTIVATE);  // don't wait here
