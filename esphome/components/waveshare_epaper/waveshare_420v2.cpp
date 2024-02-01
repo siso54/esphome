@@ -77,7 +77,7 @@ void WaveshareEPaper4P2InV2::write_lut_(const uint8_t *lut) {
   // this->cmd_data(lut, sizeof(FULL_LUT));
   SEND(lut);
   this->command(0x3F);
-  this->data(0x07);
+  this->data(0x22);
 
   this->command(0x03);
   this->data(0x17);
