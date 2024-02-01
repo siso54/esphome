@@ -59,7 +59,7 @@ static const uint8_t DATA_ENTRY[] = {0x11, 0x03};            // data entry mode
 static const uint8_t TEMP_SENS[] = {0x18, 0x80};             // Temp sensor
 static const uint8_t DISPLAY_UPDATE[] = {0x21, 0x00, 0x80};  // Display update control
 static const uint8_t UPSEQ[] = {0x22, 0xC0};
-static const uint8_t ON_FULL[] = {0x22, 0xC7};    // yes 420
+static const uint8_t ON_FULL[] = {0x22, 0xCF};    // yes 420
 static const uint8_t ON_PARTIAL[] = {0x22, 0xFF};
 static const uint8_t VCOM[] = {0x2C, 0x30};
 static const uint8_t CMD5[] = {0x37, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00, 0x00};
@@ -77,7 +77,7 @@ void WaveshareEPaper4P2InV2::write_lut_(const uint8_t *lut) {
   // this->cmd_data(lut, sizeof(FULL_LUT));
   SEND(lut);
   this->command(0x3F);
-  this->data(0x22);
+  this->data(0x07);
 
   this->command(0x03);
   this->data(0x17);
@@ -215,8 +215,8 @@ void WaveshareEPaper4P2InV2::display() {
   const bool partial = this->at_update_ != 0;
   this->at_update_ = (this->at_update_ + 1) % this->full_update_every_;
   if (partial) {
-    // this->full_update_();
-    this->partial_update_();
+    this->full_update_();
+    // this->partial_update_();
   } else {
     this->full_update_();
   }
