@@ -738,6 +738,7 @@ class WaveshareEPaper4P2InV2 : public WaveshareEPaper {
   void send_reset_();
   void partial_update_();
   void full_update_();
+  void clear_screen();
 
   uint32_t full_update_every_{3};
   uint32_t at_update_{0};
