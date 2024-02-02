@@ -144,7 +144,7 @@ void WaveshareEPaper4P2InV2::setup() {
   this->wait_until_idle_();
   ESP_LOGI(TAG, "Setup complete.");
 
-  this->clear_screen();
+  // this->clear_screen();
 }
 
 void WaveshareEPaper4P2InV2::clear_screen() {
