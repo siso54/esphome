@@ -60,7 +60,7 @@ static const uint8_t TEMP_SENS[] = {0x18, 0x80};             // Temp sensor
 static const uint8_t DISPLAY_UPDATE[] = {0x21, 0x00, 0x80};  // Display update control
 static const uint8_t UPSEQ[] = {0x22, 0xC0};
 static const uint8_t ON_FULL[] = {0x22, 0xF7};    // yes 420
-static const uint8_t ON_PARTIAL[] = {0x22, 0xC91};
+static const uint8_t ON_PARTIAL[] = {0x22, 0x91};
 static const uint8_t VCOM[] = {0x2C, 0x30};
 static const uint8_t CMD5[] = {0x37, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00, 0x00};
 static const uint8_t BORDER_PART[] = {0x3C, 0x80};  // border waveform
@@ -192,7 +192,7 @@ void WaveshareEPaper4P2InV2::partial_update_() {
     // SEND(BORDER_PART);
     // SEND(UPSEQ);
     // this->command(ACTIVATE);
-    this->clear_screen();
+    // this->clear_screen();
 
     this->set_timeout(100, [this] {
       this->wait_until_idle_();
