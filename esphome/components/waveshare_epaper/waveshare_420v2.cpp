@@ -51,7 +51,7 @@ static const uint8_t ACTIVATE = 0x20;  // yes 420
 static const uint8_t WRITE_BUFFER = 0x24; // yes 420
 static const uint8_t WRITE_BASE = 0x26;
 
-static const uint8_t DRV_OUT_CTL[] = {0x21, 0x00, 0x00};  // DISPLAY update control
+static const uint8_t DRV_OUT_CTL[] = {0x21, 0x40, 0x00};  // DISPLAY update control
 static const uint8_t GATEV[] = {0x03, 0x17};
 static const uint8_t SRCV[] = {0x04, 0x41, 0xA8, 0x32};
 static const uint8_t SLEEP[] = {0x10, 0x01};
@@ -64,7 +64,7 @@ static const uint8_t ON_PARTIAL[] = {0x22, 0xFF};
 static const uint8_t VCOM[] = {0x2C, 0x30};
 static const uint8_t CMD5[] = {0x37, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00, 0x00};
 static const uint8_t BORDER_PART[] = {0x3C, 0x80};  // border waveform
-static const uint8_t BORDER_FULL[] = {0x3C, 0x02};  // border waveform
+static const uint8_t BORDER_FULL[] = {0x3C, 0x05};  // border waveform
 static const uint8_t CMD1[] = {0x3F, 0x07};
 static const uint8_t RAM_X_START[] = {0x44, (0x00>>3) & 0xFF, (399>>3) & 0xFF};           // set ram_x_address_start_end
 static const uint8_t RAM_Y_START[] = {0x45, 0x00 & 0xFF, ((0x00 >> 8) & 0xFF), 299 & 0xFF , ((299 >> 8) & 0xFF)};  // set ram_y_address_start_end
@@ -132,10 +132,12 @@ void WaveshareEPaper4P2InV2::setup() {
   this->wait_until_idle_();
   ESP_LOGI(TAG, "Setting up.");
   SEND(DRV_OUT_CTL);
-  // SEND(BORDER_FULL);
+  SEND(BORDER_FULL);
+  this->command(0x1A);
+  this->data(0x5A);
   this->command(0x22);
   this->data(0x99);
-  this->command(0x20);
+  this->command(ACTIVATE);
   this->wait_until_idle_();
   SEND(DATA_ENTRY);
   this->set_window_(0, this->get_height_internal());
