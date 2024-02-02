@@ -162,7 +162,7 @@ void WaveshareEPaper4P2InV2::partial_update_() {
   ESP_LOGI(TAG, "Performing partial e-paper update.");
   this->set_timeout(100, [this] {
     // this->write_lut_(FULL_LUT);
-    SEND(BORDER_PART);
+    // SEND(BORDER_PART);
     SEND(UPSEQ);
     this->command(ACTIVATE);
     this->set_timeout(100, [this] {
@@ -178,7 +178,7 @@ void WaveshareEPaper4P2InV2::partial_update_() {
 void WaveshareEPaper4P2InV2::full_update_() {
   ESP_LOGI(TAG, "Performing full e-paper update.");
   // this->write_lut_(FULL_LUT);
-  SEND(BORDER_FULL);
+  // SEND(BORDER_FULL);
   SEND(UPSEQ);
   this->command(ACTIVATE);
   this->wait_until_idle_();
