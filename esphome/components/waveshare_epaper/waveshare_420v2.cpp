@@ -185,7 +185,7 @@ void WaveshareEPaper4P2InV2::initialize() { }
 void WaveshareEPaper4P2InV2::partial_update_() {
   ESP_LOGI(TAG, "Performing partial e-paper update.");
   this->set_timeout(100, [this] {
-    // this->write_lut_(FULL_LUT);
+    this->write_lut_(FULL_LUT);
     SEND(BORDER_PART);
     SEND(UPSEQ);
     this->command(ACTIVATE);
