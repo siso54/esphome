@@ -59,7 +59,7 @@ static const uint8_t DATA_ENTRY[] = {0x11, 0x03};            // data entry mode
 static const uint8_t TEMP_SENS[] = {0x18, 0x80};             // Temp sensor
 static const uint8_t DISPLAY_UPDATE[] = {0x21, 0x00, 0x80};  // Display update control
 static const uint8_t UPSEQ[] = {0x22, 0xC0};
-static const uint8_t ON_FULL[] = {0x22, 0xC7};    // yes 420
+static const uint8_t ON_FULL[] = {0x22, 0xF7};    // yes 420
 static const uint8_t ON_PARTIAL[] = {0x22, 0xFF};
 static const uint8_t VCOM[] = {0x2C, 0x30};
 static const uint8_t CMD5[] = {0x37, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00, 0x00};
@@ -128,21 +128,39 @@ void WaveshareEPaper4P2InV2::setup() {
   this->wait_until_idle_();
   ESP_LOGI(TAG, "SW reset.");
   // SW reset
-  this->command(0x12);
+  this->command(SW_RESET);
   this->wait_until_idle_();
   ESP_LOGI(TAG, "Setting up.");
   SEND(DRV_OUT_CTL);
   SEND(BORDER_FULL);
-  this->command(0x1A);
-  this->data(0x5A);
-  this->command(0x22);
-  this->data(0x99);
-  this->command(ACTIVATE);
+  // this->command(0x1A);
+  // this->data(0x5A);
+  // this->command(0x22);
+  // this->data(0x99);
+  // this->command(ACTIVATE);
   this->wait_until_idle_();
   SEND(DATA_ENTRY);
   this->set_window_(0, this->get_height_internal());
   this->wait_until_idle_();
   ESP_LOGI(TAG, "Setup complete.");
+
+  this->command(0x24);
+    for (int j = 0; j < Height; j++) {
+        for (int i = 0; i < Width; i++) {
+            this->data(0xFF);
+        }
+    }
+
+    this->command(0x26);
+    for (int j = 0; j < Height; j++) {
+        for (int i = 0; i < Width; i++) {
+            this->data(0xFF);
+        }
+    }
+
+    SEND(ON_PARTIAL);
+    this->command(ACTIVATE);
+    this->wait_until_idle_();
 }
 
 // t and b are y positions, i.e. line numbers.
