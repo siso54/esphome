@@ -133,10 +133,10 @@ void WaveshareEPaper4P2InV2::setup() {
   ESP_LOGI(TAG, "Setting up.");
   SEND(DRV_OUT_CTL);
   SEND(BORDER_FULL);
-  this->command(0x1A);
-  this->data(0x5A);
-  this->command(0x22);
-  this->data(0x91);
+  // this->command(0x1A);
+  // this->data(0x5A);
+  // this->command(0x22);
+  // this->data(0x91);
   this->command(ACTIVATE);
   this->wait_until_idle_();
   SEND(DATA_ENTRY);
