@@ -144,6 +144,10 @@ void WaveshareEPaper4P2InV2::setup() {
   this->wait_until_idle_();
   ESP_LOGI(TAG, "Setup complete.");
 
+  int Width = (400 % 8 == 0 )? (400 / 8 ): (400 / 8 + 1);
+  int Height = 300;
+
+
   this->command(0x24);
     for (int j = 0; j < Height; j++) {
         for (int i = 0; i < Width; i++) {
