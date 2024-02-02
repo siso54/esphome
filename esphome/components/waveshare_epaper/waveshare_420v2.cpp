@@ -136,7 +136,7 @@ void WaveshareEPaper4P2InV2::setup() {
   this->command(0x1A);
   this->data(0x5A);
   this->command(0x22);
-  this->data(0x99);
+  this->data(0x91);
   this->command(ACTIVATE);
   this->wait_until_idle_();
   SEND(DATA_ENTRY);
@@ -193,25 +193,6 @@ void WaveshareEPaper4P2InV2::partial_update_() {
     // SEND(UPSEQ);
     // this->command(ACTIVATE);
     // this->clear_screen();
-
-    this->command(0x37);
-    this->data(0x00);
-    this->data(0x00);
-    this->data(0x00);
-    this->data(0x00);
-    this->data(0x00);
-    this->data(0x40);
-    this->data(0x00);
-    this->data(0x00);
-    this->data(0x00);
-    this->data(0x00);
-
-    this->command(0x3C);
-    this->data(0x80);
-    this->command(0x22);
-    this->data(0xC0);
-    this->command(0x20);
-    this->wait_until_idle_();
 
     this->set_timeout(100, [this] {
       this->wait_until_idle_();
