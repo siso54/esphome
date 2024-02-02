@@ -135,8 +135,8 @@ void WaveshareEPaper4P2InV2::setup() {
   SEND(BORDER_FULL);
   this->command(0x1A);
   this->data(0x5A);
-  // this->command(0x22);
-  // this->data(0x99);
+  this->command(0x22);
+  this->data(0x99);
   this->command(ACTIVATE);
   this->wait_until_idle_();
   SEND(DATA_ENTRY);
