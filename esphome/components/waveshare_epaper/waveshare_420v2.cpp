@@ -188,17 +188,38 @@ void WaveshareEPaper4P2InV2::initialize() { }
 void WaveshareEPaper4P2InV2::partial_update_() {
   ESP_LOGI(TAG, "Performing partial e-paper update.");
   this->set_timeout(100, [this] {
-    this->write_lut_(FULL_LUT);
+    // this->write_lut_(FULL_LUT);
     // SEND(BORDER_PART);
     // SEND(UPSEQ);
     // this->command(ACTIVATE);
     // this->clear_screen();
+
+    this->command(0x37);
+    this->data(0x00);
+    this->data(0x00);
+    this->data(0x00);
+    this->data(0x00);
+    this->data(0x00);
+    this->data(0x40);
+    this->data(0x00);
+    this->data(0x00);
+    this->data(0x00);
+    this->data(0x00);
+
+    this->command(0x3C);
+    this->data(0x80);
+    this->command(0x22);
+    this->data(0xC0);
+    this->command(0x20);
+    this->wait_until_idle_();
 
     this->set_timeout(100, [this] {
       this->wait_until_idle_();
       this->write_buffer_(WRITE_BUFFER, 0, this->get_height_internal());
       SEND(ON_PARTIAL);
       this->command(ACTIVATE);  // don't wait here
+      this->wait_until_idle_();
+      this->write_buffer_(WRITE_BUFFER, 0, this->get_height_internal());
       this->is_busy_ = false;
     });
   });
