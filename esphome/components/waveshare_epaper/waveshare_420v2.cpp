@@ -221,8 +221,18 @@ void WaveshareEPaper4P2InV2::full_update_() {
 }
 
 void WaveshareEPaper4P2InV2::display() {
-  if (this->is_busy_ || (this->busy_pin_ != nullptr && this->busy_pin_->digital_read()))
-    return;
+
+  const uint32_t start = millis();
+  while (this->is_busy_) {
+    if (millis() - start > 1500) {
+      ESP_LOGE(TAG, "Timeout while displaying");
+      return;
+    }
+    delay(1);
+  }
+  this->wait_until_idle_();
+  // if (this->is_busy_ || (this->busy_pin_ != nullptr && this->busy_pin_->digital_read()))
+  //   return;
   this->is_busy_ = true;
   const bool partial = this->at_update_ != 0;
   this->at_update_ = (this->at_update_ + 1) % this->full_update_every_;
