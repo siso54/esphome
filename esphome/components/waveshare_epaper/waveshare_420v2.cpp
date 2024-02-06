@@ -242,6 +242,8 @@ void WaveshareEPaper4P2InV2::display() {
   } else {
     this->full_update_();
   }
+  ESP_LOGI(TAG, "Set the display to deep sleep");
+  this->deep_sleep();
 }
 
 int WaveshareEPaper4P2InV2::get_width_internal() { return 400; }
